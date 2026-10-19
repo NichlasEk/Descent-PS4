@@ -9,6 +9,7 @@ clang++ --target=x86_64-pc-freebsd12-elf --sysroot="$sdk" -std=c++23 \
   -fuse-ld=lld -nostdlib -Wl,-pie,--eh-frame-hdr,-z,max-page-size=0x4000 \
   -Wl,--script="$sdk/link.x" -Wl,--script="$root/cmake/runtime-fini.ld" "$sdk/lib/crt1.o" \
   "$root/tests/cxx-runtime-probe.cpp" \
+  "$root/tests/ps4-exit.cpp" -Wl,--wrap=_exit \
   -L"$root/build/ps4-deps/lib" -L"$sdk/lib" \
-  -lc++ -lc++abi -lunwind -lc -lkernel \
+  -lc++ -lc++abi -lunwind -lc -lSceSystemService -lkernel \
   -o "$root/build/ps4-probes/cxx-runtime.elf"

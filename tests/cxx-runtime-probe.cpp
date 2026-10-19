@@ -43,7 +43,7 @@ int main() {
     auto *log = std::fopen(log_path, "w");
     if (!log) return 2;
     std::setvbuf(log, nullptr, _IONBF, 0);
-    std::fprintf(log, "START: runtime probe 0.02, not the game\n");
+    std::fprintf(log, "START: runtime probe 0.03, not the game\n");
     if (std::atexit(at_exit_marker) != 0) {
         std::fprintf(log, "FAIL: atexit registration\n");
         std::fclose(log);

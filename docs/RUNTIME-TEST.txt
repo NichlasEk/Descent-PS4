@@ -1,4 +1,4 @@
-Descent I + II - Runtime Test 0.02
+Descent I + II - Runtime Test 0.03
 
 This package is NOT the game. It contains no levels or retail assets.
 It tests the new PS4 C++ runtime: threads, locale, streams and exceptions.
@@ -6,6 +6,8 @@ There is no rendered screen; the program exits after the test.
 Read /data/descent-ps4/runtime-probe.log via FTP after launching.
 RESULT: PASS covers the functional checks, not successful process exit.
 Later markers cover local-object destruction, return from main, atexit and
-fini_array callbacks. Confirm no crash dialog after launch.
+fini_array callbacks, then libc cleanup complete / requesting PS4 system exit.
+Version 0.03 requests system-service exit only after standard libc cleanup.
+Confirm no crash dialog after launch; final marker alone does not prove exit.
 A missing or incomplete log does not mean success.
 No gameplay or physical-console compatibility has yet been verified.

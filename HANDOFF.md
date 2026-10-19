@@ -11,6 +11,18 @@ says RUNTIME TEST. On launch no graphics are rendered; read
 
 ## Verified
 
+- 0.02 physical log reached local destruction, atexit AND fini_array callback,
+  then CE-34878-0 was recorded (000001B1.json). The table fix alone did not fix
+  the crash. Evidence: artifacts/crash-runtime-002. Remaining boundary was
+  stdio cleanup / raw kernel process exit, not the functional C++ checks.
+- 0.03 wraps libc's final _exit to request sceSystemServiceLoadExec("exit")
+  AFTER normal cleanup. Adjacent Doom3 install-smoke source explicitly notes
+  raw _exit caused SIGSYS on hardware; this is supporting evidence, not a
+  confirmed Descent exception code. Uses descriptor logging after stdio exit.
+- 0.03 package validated and uploaded to /data/pkg with full FTP readback.
+  Await installation/start by user; final marker should say libc cleanup
+  complete / requesting PS4 system exit. No claim of fixed physical exit yet.
+
 - Physical 0.01 test logged all functional checks PASS, but the console recorded
   CE-34878-0 for DSNT00001. Thus successful process exit was NOT verified.
   Evidence is local in artifacts/crash-runtime-001 (not for publication).
