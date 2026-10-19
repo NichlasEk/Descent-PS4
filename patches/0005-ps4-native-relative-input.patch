@@ -1,0 +1,9 @@
+diff --git a/common/arch/sdl/event.cpp b/common/arch/sdl/event.cpp
+--- a/common/arch/sdl/event.cpp
++++ b/common/arch/sdl/event.cpp
+@@ -309,3 +309,5 @@
+ 	SDL_SetWindowGrab(g_pRebirthSDLMainWindow, enable_grab ? SDL_TRUE : SDL_FALSE);
++#ifndef __ORBIS__
+ 	SDL_SetRelativeMouseMode(enable_grab ? SDL_TRUE : SDL_FALSE);
++#endif
+ #endif

@@ -1,0 +1,16 @@
+diff --git a/similar/main/kconfig.cpp b/similar/main/kconfig.cpp
+--- a/similar/main/kconfig.cpp
++++ b/similar/main/kconfig.cpp
+@@ -2057,3 +2057,12 @@
+ void kc_set_controls()
+ {
++#if defined(__ORBIS__) && DXX_MAX_JOYSTICKS && SDL_MAJOR_VERSION == 2
++    // Migrate keyboard-only pilots created by PS4 Engine Test 0.04.
++    // Existing enabled/custom joystick bindings are retained.
++    if (num_controllers && !(PlayerCfg.ControlType & CONTROL_USING_JOYSTICK)) {
++        PlayerCfg.ControlType |= CONTROL_USING_JOYSTICK;
++        PlayerCfg.KeySettings.Joystick = DefaultKeySettingsGameController;
++        con_puts(CON_NORMAL, "PS4: enabled GameController for keyboard-only pilot");
++    }
++#endif
+ 	for (auto &&[kcm, setting] : zip(kcm_keyboard, PlayerCfg.KeySettings.Keyboard))

@@ -1,5 +1,156 @@
 # Descent PS4 bring-up — 2026-10-19
 
+## Release preparation (latest)
+
+Maintainer now reports Collection 0.06 works very well on physical PS4 and asks
+for a release. This supersedes pending launcher acceptance below. README updated;
+release notes/checklist in docs/RELEASE.md. Public distribution still needs
+dependency/source closure and complete notices. Repository currently private;
+visibility approval received, conditional on completing release checks. Tested
+package unchanged. Source candidate snapshot: build/release-sources-dzwl44ck.
+Inventory's public_release_ready=false: exact SDK SDL_image source unresolved
+(IMG_Linked_Version disassembly reports development 2.0.6; no upstream tag),
+and dependency build integration remains incomplete. OpenOrbis packaged module
+hashes verified against SDK src/modules outputs. Do not infer missing source
+identity from version numbers or from a nearby upstream release.
+
+## Latest: combined launcher 0.06 (2026-10-19)
+
+User explicitly confirmed 0.05 game rendering AND controls work very well on
+physical PS4. Preserve those tested game binaries. They now request one combined
+cool launch menu and acceptance of legally purchased full classic PC game data.
+
+Implemented Collection launcher with generated hangar art and icon, animated
+selection border, D-pad/left-stick navigation, Cross launch, Triangle help,
+Circle exit, remembered selection, HDD/USB data-found status and missing-data
+warning instead of attempting a doomed launch. One new title DSNT00004.
+Individual games currently still quit to PS4 shell, not back to launcher.
+
+Build: `bash scripts/build-launcher.sh` (does not rebuild game engines).
+Package: `python3 scripts/package-runtime.py --collection`.
+Artifact: `dist/Descent-I-II-PS4-Collection-0.06.pkg`.
+Uploaded and full-readback verified at 192.168.32.229:2121:
+`/data/pkg/Descent-I-II-PS4-Collection-0.06.pkg` (73,203,712 bytes).
+SHA-256: 57a60e47c087b1ff480e63bf6495b0834a83dcc9766be4a02e187feb65ef5d27.
+Not installed by agent. Receipt: artifacts/ftp-Descent-I-II-PS4-Collection-0.06.json.
+Verifier: `python3 scripts/verify-collection.py` extracts the PKG, checks payload
+hashes/allowlist/SFO semantics and extracts both old 0.05 packages to prove
+`descent1.bin` and `descent2.bin` are byte-identical to their tested EBOOTs.
+PkgTool adds PUBTOOLINFO/PUBTOOLVER; these are the only allowed SFO additions.
+No demo or retail game data in the collection PKG.
+
+Emulator checks completed: menu screenshot, both game buttons invoke
+sceSystemServiceLoadExec and reach the respective pilot menu, help overlay,
+remembered last choice, missing-data refusal under a separate empty profile.
+An initial cold empty-profile capture stalled before completing GPU init;
+the immediate repeat reached the menu and refusal correctly. No game code
+changed to work around that isolated emulator observation.
+Menu/grouped glyph rendering uses the same PS4GL backend as the tested games.
+Smoke harness uses an isolated process group so emulator self-restarts do not
+leave an orphan game process. `bash scripts/smoke-launcher.sh menu|help|d1|d2`.
+The d1 artifact was overwritten by the later missing-data test; the successful
+D1 launch was visually inspected before that overwrite. D2 image retained.
+
+Game data: `docs/GAME-DATA.txt` lists full D1/D2 PC files and explains upgrading
+from demo, lower-case filenames, HDD preference and USB0-7 fallback. Engine
+retail support confirmed against pinned INSTALL.markdown and file-selection
+source; no retail assets available/tested yet. Music/movies remain disabled in
+the unchanged games. Never equate original-game compatibility with a completed
+physical retail-data test.
+
+Art: assets/launcher/hangar.png and icon.png generated with built-in image_gen;
+exact prompts are in assets/launcher/PROMPTS.txt. Font is OFL Gontserrat from
+SDK samples, with license, rendered into an ASCII atlas by tools/make-menu-font.c.
+All assets persisted in repo. Shared SDK and ScummVM project untouched.
+No source commit/push performed this turn; substantial previous work remains
+uncommitted too. No old PS4 installs/packages or game data deleted.
+
+Physical acceptance of the NEW launcher and cross-executable LoadExec remains
+pending; 0.05 gameplay acceptance does not prove that new transition on hardware.
+
+## Current: actual engine port (supersedes historical next gates below)
+
+User reports Engine Test 0.04 renders well on physical PS4, but ship controls
+do not work. Found two concrete issues: malformed backend GUID has no built-in
+GameController mapping, so pilots defaulted to keyboard; backend declares six
+axes but emits 0,1,2,4,5,6 (R2 index6 was discarded). Local input.c registers
+the actual GUID and wraps SDL_PrivateJoystickAxis to normalize upper slots.
+Engine patch0006 enables controller bindings for keyboard-only pilots while
+retaining enabled/custom joystick bindings. No remote profiles overwritten.
+ASan/UBSan test-input passes all 393216 axis values and mapping registration.
+Emulator D1 existing-pilot test logs migration, moves forward, yaws and fires R2;
+visually confirmed changed position/orientation, energy99 and projectile impact.
+Both engines rebuilt; 0.05 keeps the 0.04 title IDs and external data paths.
+Physical input acceptance still pending. User also requests distinct icons OR
+a combined package/launcher (prefers the latter); async choice asked, pending.
+No new icon or combined launcher implemented yet. Existing runtime icon retained.
+
+Both DXX game engines now cross-compile and link as PS4 executables in
+`build/ps4-game/descent1` and `descent2`. Both reached their rendered menu and
+pilot-name dialog in shadPS4, visually inspected in `artifacts/dN-ps4-smoke.png`.
+This is actual PS4 executable evidence, NOT the earlier Linux host runs.
+D1 and D2 additionally reached level 1 with cockpit and textured 3D scene, visually
+inspected after test-only Cross/Circle input. HUD/briefing text initially rendered
+as solid rectangles: disabling unsupported intensity4/luminance4-alpha4/RGBA2
+formats selects RGBA. D1's level screenshot now shows readable HUD text; D2
+has been relinked with the same change but not recaptured yet.
+Movement/combat, audible sound and physical-console
+acceptance remain unverified.
+
+Engine Test 0.04 for both games uploaded to 192.168.32.229:2121 `/data/pkg`:
+`Descent-1-PS4-Engine-Test-0.04.pkg` (DSNT00002) and
+`Descent-2-PS4-Engine-Test-0.04.pkg` (DSNT00003). Full FTP readback hashes match
+the local manifests; PKG validation passes. Neither installed by the agent.
+The five pinned demo files were separately uploaded/readback-verified under
+`/data/descent-ps4/d1/data` and `d2/data`; no existing files overwritten.
+Packages retain the previous runtime-test icon but have distinct Engine Test
+titles; no game data inside. Build with `python3 scripts/package-runtime.py
+--game 1` (or 2); existing dist files are never overwritten.
+
+Implemented locally, without modifying SDK or sibling projects:
+
+- LLVM 21 C++23 runtime, PhysFS and SDL/PS4GL/native GPU linkage.
+- PhysFS native stat ABI conversion: SDK struct uses a 32-bit mode field but
+  the kernel uses 16 bits; incorrect size offset truncated the demo HOG.
+- HDD-first `/data/descent-ps4/dN/data`, then USB0–7 at
+  `/mnt/usbN/descent-ps4/dN/data`; profiles/logs stay on HDD. Fallback order is
+  code-reviewed, not yet physically exercised.
+- Fixed 1280x720 display, external depth attachment, base-level textures.
+- Fan/strip conversion to indexed triangles for the legacy GL client arrays.
+  Lines/points remain unsupported by the renderer; automap/crosshair need work.
+- U8 game audio conversion to 48kHz S16; not listening-tested. SDL semaphores
+  use pthread mutex/condition variables because shadPS4 ksem stubs falsely
+  completed thread startup waits, freeing arguments before child consumption.
+  Host ASan/UBSan tests pass 100 startup handshakes, timeout and count checks.
+
+Build: `bash scripts/build-ps4-game.sh` completed end-to-end successfully.
+Requires sibling ScummVM-PS4 graphics
+sources and prebuilt SDL/shader/native libraries (not a standalone release yet).
+Capture: `bash scripts/smoke-ps4-game.sh 1` (or 2), sequentially.
+Optional `DESCENT_SMOKE_ACCEPT=1` sends seven Cross presses then Circle in isolated Xvfb;
+capture is not a pass assertion. Profile lives in `build/emulator-profile`.
+Use a single ninja process per output directory. A subsequent dry run still
+reports a prematurely ended dependency log and rebuilds all engine objects;
+incremental-build bookkeeping needs diagnosis (full build succeeds).
+Emulated Cross input advanced D1 from pilot creation to the briefing; the
+pilot .plr/.plx were written under the isolated HDD profile. Briefing text has
+initially showed solid-color glyph artifacts, corrected in the later D1 HUD
+capture by selecting RGBA textures (see above).
+At level entry SDL asserted `mouse->WarpMouse`: native PS4 backend has neither
+desktop mouse warp nor relative-mode toggle. Engine patch 0005 skips that
+desktop toggle on ORBIS (native backend already sends relative mouse deltas).
+Both games relinked; D1 and D2 then passed the assertion and rendered level 1.
+
+Remaining gates: level rendering, natural six-axis controller defaults and
+menus/save flow, lines/points, sound/music, clean close/relaunch, data-free
+package validation and physical PS4 test. Networking compiles because upstream
+has unguarded references; it is NOT supported/tested. Random shuffle is disabled.
+Current game shutdown reuses tests/ps4-exit.cpp and writes a runtime-probe log
+marker: separate this before shipping. Shared renderer C++ libs are older than
+the project runtime; startup shader compilation worked, broader ABI unverified.
+
+## Historical runtime diagnostics
+
 Independent checkout and private remote: NichlasEk/Descent-PS4. AvP-PS4 is
 unchanged. Runtime-only diagnostic package uploaded to 192.168.32.229:2121:
 /data/pkg/Descent-PS4-Runtime-Test-0.01.pkg (7143424 bytes).

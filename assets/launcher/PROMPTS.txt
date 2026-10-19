@@ -1,0 +1,10 @@
+Generated with the built-in image_gen tool, 2026-10-19. No retail game artwork used.
+
+hangar.png:
+Use case: stylized-concept. Asset type: widescreen 16:9 game launcher background artwork for a combined Descent I + II PS4 homebrew port. Cinematic retro sci-fi underground mining hangar, compact angular six-axis fighter spacecraft hovering in upper right, distant mine tunnel with orange reactor light, cool blue navigation lighting, dark worn industrial metal. Detailed tasteful 1990s space combat cover-art atmosphere, dramatic but restrained. Composition: ship and architectural interest in upper third and far right, lower half and left half calm and dark enough for readable menu cards overlaid by code. Full bleed, no text, no logos, no menu controls, no watermark, no border. This is background art, not a UI mockup.
+
+icon.png:
+Use case: stylized-concept. Asset type: square PS4 homebrew application icon for Descent I + II collection. Original polished retro sci-fi cover artwork: a compact angular mining combat spaceship flying toward the viewer in a dark subterranean industrial tunnel, orange reactor glow and cool blue engine trails, strong readable silhouette. Bold metallic beveled typography in top third, exact text: "DESCENT". Smaller clean metallic text beneath it, exact text: "I + II". Text large and fully within image safe margins, readable at small icon size. Dramatic high contrast, cinematic painted 3D look, full-bleed square artwork. No extra text, no runtime or test label, no PS4 logo, no watermark, no rounded-corner mockup.
+
+menu.ttf: Gontserrat Regular, OFL (see FONT-LICENSE.txt). Glyphs rendered at
+build time by tools/make-menu-font.c; labels and widgets are code-rendered.

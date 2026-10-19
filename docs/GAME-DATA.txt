@@ -1,0 +1,59 @@
+DESCENT I + II / PS4 COLLECTION
+
+Both the original PC full games and the PC shareware/demo data are supported
+by the DXX-Rebirth engine. The package contains no original game data.
+Full retail data has not yet been exercised on this PS4 port: demo gameplay
+and controls were confirmed on the user's physical console in version 0.05.
+
+Copy files from your legally obtained classic PC installation, NOT an ISO or
+installer, into these directories. Use lowercase filenames:
+
+  Descent 1: /data/descent-ps4/d1/data/
+  Descent 2: /data/descent-ps4/d2/data/
+
+Full Descent 1 requires:
+  descent.hog
+  descent.pig
+
+Full Descent 2 requires:
+  descent2.hog
+  descent2.ham
+  descent2.s22
+  alien1.pig
+  alien2.pig
+  fire.pig
+  groupa.pig
+  ice.pig
+  water.pig
+
+Keep the complete data set from the SAME game/version together. Do not combine
+demo HOG/PIG files with retail ones. Back up the demo directory, then replace
+its contents with the full data set. Keep d1 and d2 separate. The game engine
+detects the edition from the files; no new PKG is needed when you buy the game.
+Retail Descent 2 files take precedence over d2demo files in the engine, but
+keeping only one complete edition in a directory avoids mixed-data problems.
+
+USB fallback uses:
+  /mnt/usb0/descent-ps4/d1/data/
+  /mnt/usb0/descent-ps4/d2/data/
+and then usb1 through usb7 in order. HDD is always preferred. If a complete
+demo is still on HDD, the game will use that demo instead of a full game on USB.
+Back up/move that HDD demo data yourself if you want the USB copy selected.
+
+Pilots and saves remain outside the data directory:
+  /data/descent-ps4/d1/
+  /data/descent-ps4/d2/
+Changing editions or installing the Collection does not erase those profiles.
+
+The initial launcher check detects key files, not archive integrity or every
+retail level/texture file. "READY" is not a full data validation result.
+Music and movies remain disabled in the currently tested game builds. They
+are not unlocked by purchasing/copying retail data. This is not Descent 3,
+Overload, or a modern remake; those game files are incompatible.
+
+Launcher: left/right (or left stick) selects a game; Cross starts it; Triangle
+shows help; Circle exits. The previous selection is remembered. Quitting an
+individual game returns to the PS4 shell, not to the launcher. Open the
+Collection again to select the other game.
+
+Logs: /data/descent-ps4/launcher.log and d1/boot.log or d2/boot.log.

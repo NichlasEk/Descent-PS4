@@ -15,7 +15,9 @@ and applies runtime-patches idempotently. Hash is locally recorded, not a
 publisher signature verification. All generated files remain ignored in build/.
 The SDK supplies C headers, libc, startup object and PS4 kernel imports and
 is never modified. The runtime retains localization, threads and exceptions;
-filesystem, time-zone database and random-device support are disabled.
+time-zone database and random-device support are disabled. Filesystem support
+is enabled for the renderer dependency, with portable file copying instead of
+FreeBSD copy_file_range/sendfile (see runtime patch 0003).
 
 LLVM patches retain upstream licensing (Apache-2.0 WITH LLVM-exception).
 Before binary distribution preserve the corresponding LLVM license notices.

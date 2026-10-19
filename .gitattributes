@@ -1,1 +1,5 @@
 patches/*.patch -whitespace
+dependency-patches/*.patch -whitespace
+runtime-patches/*.patch -whitespace
+# Preserve the upstream legal text's original whitespace.
+LICENSE -whitespace

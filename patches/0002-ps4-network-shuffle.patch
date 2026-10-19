@@ -1,0 +1,17 @@
+diff --git a/similar/main/net_udp.cpp b/similar/main/net_udp.cpp
+index b2c4205..1f3a7eb 100644
+--- a/similar/main/net_udp.cpp
++++ b/similar/main/net_udp.cpp
+@@ -4791,7 +4791,12 @@ static int net_udp_select_players()
+ 	{
+ 		unsigned seed{0};
+ 		try {
++#ifdef __ORBIS__
++			// Multiplayer shuffle is not supported in the initial PS4 build.
++			throw std::runtime_error("PS4 multiplayer shuffle unavailable");
++#else
+ 			seed = std::random_device()();
++#endif
+ 			if (!seed)
+ 				/* random_device can return any number, including zero.
+ 				 * Rebirth treats zero specially, interpreting it as a

@@ -1,0 +1,126 @@
+diff --git a/src/physfs_archiver_hog.c b/src/physfs_archiver_hog.c
+index a818478..2a63d10 100644
+--- a/src/physfs_archiver_hog.c
++++ b/src/physfs_archiver_hog.c
+@@ -58,6 +58,9 @@ static int readui32(PHYSFS_Io *io, PHYSFS_uint32 *val)
+ static int hog1LoadEntries(PHYSFS_Io *io, void *arc)
+ {
+     const PHYSFS_uint64 iolen = io->length(io);
++#ifdef __ORBIS__
++    fprintf(stderr, "PS4 HOG length=%llu\n", (unsigned long long)iolen);
++#endif
+     PHYSFS_uint32 pos = 3;
+ 
+     while (pos < iolen)
+diff --git a/src/physfs_internal.h b/src/physfs_internal.h
+index 2200d4d..c0e83c6 100644
+--- a/src/physfs_internal.h
++++ b/src/physfs_internal.h
+@@ -235,7 +235,7 @@ extern void SZIP_global_init(void);
+ #elif defined(__OpenBSD__) || defined(__DragonFly__)
+ #include <endian.h>
+ #define PHYSFS_BYTEORDER  BYTE_ORDER
+-#elif defined(__FreeBSD__) || defined(__NetBSD__)
++#elif (defined(__FreeBSD__) || defined(__NetBSD__)) && !defined(__ORBIS__)
+ #include <sys/endian.h>
+ #define PHYSFS_BYTEORDER  BYTE_ORDER
+ /* predefs from newer gcc and clang versions: */
+diff --git a/src/physfs_platform_posix.c b/src/physfs_platform_posix.c
+index 7ba5e10..9a9ba4e 100644
+--- a/src/physfs_platform_posix.c
++++ b/src/physfs_platform_posix.c
+@@ -23,6 +23,54 @@
+ 
+ #include "physfs_internal.h"
+ 
++#ifdef __ORBIS__
++#include <stddef.h>
++#include <orbis/libkernel.h>
++/* SDK mode_t is wider than the native kernel ABI in this toolchain. */
++struct ps4_native_stat {
++    uint32_t dev, ino;
++    uint16_t mode, nlink;
++    uint32_t uid, gid, rdev;
++    struct timespec atim, mtim, ctim;
++    int64_t size, blocks;
++    uint32_t blksize, flags, gen;
++    int32_t spare;
++    struct timespec birthtim;
++};
++_Static_assert(offsetof(struct ps4_native_stat, size) == 72, "PS4 stat size offset");
++_Static_assert(sizeof(struct ps4_native_stat) == 120, "PS4 stat ABI size");
++static void ps4_convert_stat(struct stat *out, const struct ps4_native_stat *in) {
++    memset(out, 0, sizeof(*out));
++    out->st_mode = in->mode;
++    out->st_size = in->size;
++    out->st_blocks = in->blocks;
++    out->st_atim = in->atim;
++    out->st_mtim = in->mtim;
++    out->st_ctim = in->ctim;
++}
++static int ps4_result(int rc) {
++    if (rc >= 0) return rc;
++    errno = (unsigned)rc & 0xffff;
++    return -1;
++}
++static int ps4_stat(const char *path, struct stat *st) {
++    struct ps4_native_stat native;
++    int rc = ps4_result(sceKernelStat(path, (OrbisKernelStat *)&native));
++    if (rc == 0) ps4_convert_stat(st, &native);
++    return rc;
++}
++static int ps4_fstat(int fd, struct stat *st) {
++    struct ps4_native_stat native;
++    int rc = ps4_result(sceKernelFstat(fd, (OrbisKernelStat *)&native));
++    if (rc == 0) ps4_convert_stat(st, &native);
++    return rc;
++}
++/* This port explicitly permits symlinks and follows them for metadata. */
++#define stat(path, st) ps4_stat(path, st)
++#define lstat(path, st) ps4_stat(path, st)
++#define fstat(fd, st) ps4_fstat(fd, st)
++#endif
++
+ 
+ static PHYSFS_ErrorCode errcodeFromErrnoError(const int err)
+ {
+@@ -85,6 +133,9 @@ static char *getUserDirByUID(void)
+ 
+ char *__PHYSFS_platformCalcUserDir(void)
+ {
++#ifdef __ORBIS__
++    return __PHYSFS_strdup("/data/descent-ps4/");
++#endif
+     char *retval = NULL;
+     char *envr = getenv("HOME");
+ 
+diff --git a/src/physfs_platform_unix.c b/src/physfs_platform_unix.c
+index 10d93a7..93f12e6 100644
+--- a/src/physfs_platform_unix.c
++++ b/src/physfs_platform_unix.c
+@@ -248,6 +248,10 @@ static char *readSymLink(const char *path)
+ 
+ char *__PHYSFS_platformCalcBaseDir(const char *argv0)
+ {
++#ifdef __ORBIS__
++    (void)argv0;
++    return __PHYSFS_strdup("/app0/");
++#endif
+     char *retval = NULL;
+     const char *envr = NULL;
+ 
+diff --git a/src/physfs_platforms.h b/src/physfs_platforms.h
+index 1ac17d9..ff80985 100644
+--- a/src/physfs_platforms.h
++++ b/src/physfs_platforms.h
+@@ -53,6 +53,10 @@
+ #  define PHYSFS_PLATFORM_SOLARIS 1
+ #  define PHYSFS_PLATFORM_UNIX 1
+ #  define PHYSFS_PLATFORM_POSIX 1
++#elif defined(__ORBIS__)
++#  define PHYSFS_PLATFORM_UNIX 1
++#  define PHYSFS_PLATFORM_POSIX 1
++#  define PHYSFS_NO_CDROM_SUPPORT 1
+ #elif defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__DragonFly__)
+ #  define PHYSFS_PLATFORM_FREEBSD 1
+ #  define PHYSFS_PLATFORM_BSD 1

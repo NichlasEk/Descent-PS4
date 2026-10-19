@@ -1,0 +1,41 @@
+diff --git a/similar/arch/ogl/gr.cpp b/similar/arch/ogl/gr.cpp
+index 3d910b2..63c4d1a 100644
+--- a/similar/arch/ogl/gr.cpp
++++ b/similar/arch/ogl/gr.cpp
+@@ -705,6 +705,11 @@ static int gr_check_mode(const screen_mode mode)
+ 
+ int gr_set_mode(screen_mode mode)
+ {
++#ifdef __ORBIS__
++	mode.width = 1280;
++	mode.height = 720;
++	Game_screen_mode = mode;
++#endif
+ 	unsigned char *gr_bm_data;
+ #if SDL_MAJOR_VERSION == 1
+ 	if (!gr_check_mode(mode))
+@@ -775,7 +780,12 @@ static int ogl_init_load_library(void)
+ void gr_set_attributes(void)
+ {
+ #if !DXX_USE_OGLES
++#ifdef __ORBIS__
++	// Depth/stencil images are supplied by our native frame owner.
++	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
++#else
+ 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
++#endif
+ 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE,0);
+ 	SDL_GL_SetAttribute(SDL_GL_ACCUM_RED_SIZE,0);
+ 	SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE,0);
+@@ -812,6 +822,11 @@ void gr_set_attributes(void)
+ 
+ int gr_init()
+ {
++#ifdef __ORBIS__
++	Game_screen_mode.width = 1280;
++	Game_screen_mode.height = 720;
++	CGameCfg.WindowMode = 1;
++#endif
+ 	// Only do this function once!
+ 	if (gr_installed==1)
+ 		return -1;

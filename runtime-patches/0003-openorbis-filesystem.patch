@@ -1,0 +1,17 @@
+--- a/libcxx/src/filesystem/operations.cpp
++++ b/libcxx/src/filesystem/operations.cpp
+@@ -49,10 +49,12 @@
+ #  elif _LIBCPP_HAS_MUSL_LIBC
+ #    define _LIBCPP_FILESYSTEM_USE_COPY_FILE_RANGE
+ #  endif
+-#elif defined(__FreeBSD__)
++#elif defined(__FreeBSD__) && !defined(__ORBIS__)
+ #  define _LIBCPP_FILESYSTEM_USE_COPY_FILE_RANGE
+ #endif
+-#if __has_include(<sys/sendfile.h>)
++#if defined(__ORBIS__)
++#  define _LIBCPP_FILESYSTEM_USE_FSTREAM
++#elif __has_include(<sys/sendfile.h>)
+ #  include <sys/sendfile.h>
+ #  define _LIBCPP_FILESYSTEM_USE_SENDFILE
+ #elif defined(__APPLE__) || __has_include(<copyfile.h>)

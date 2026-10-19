@@ -3,17 +3,27 @@
 Native PS4 port project by [Nichlas Ek](https://github.com/NichlasEk), based on
 [DXX-Rebirth](https://github.com/dxx-rebirth/dxx-rebirth).
 
-**Initial bring-up: no PS4 executable or console compatibility claim yet.**
+**Collection 0.06: gameplay, controls and the combined launcher confirmed working
+on a physical PS4 by the maintainer. Public release preparation is in progress.**
 
-Both engines build on Linux and the demos reach their menu/pilot-name screens.
-The D1 shareware sound-loading fixes are preserved in the patch overlay, with a
-targeted ASan/UBSan regression test. The current PS4 gate is the SDK's older
-C++ standard library: upstream requires facilities it does not provide.
-See [current handoff](HANDOFF.md) for evidence and next steps.
+Both engines now run natively on PS4, with a shared illustrated launcher and
+controller support. See [release preparation](docs/RELEASE.md) and
+[current handoff](HANDOFF.md) for evidence and remaining limitations.
 
-First milestone: a Descent I shareware level with rendering, audio and controls.
-Then bring up Descent II using the same platform layer. Planned data policy:
-external HDD first, USB fallback; no retail game data in packages or Git.
+Supply your own classic PC game files or separately obtained official demos.
+Data is read from `/data/descent-ps4/d1/data` and `d2/data` first, then
+`/mnt/usb0/descent-ps4/d1/data` and `d2/data`, through USB7. Existing HDD demos
+take priority over USB retail data. Profiles stay on HDD. No game data is bundled.
+See [required files and upgrading to full games](docs/GAME-DATA.txt).
+Retail data is supported by the engine but not yet tested on this port.
+
+Launcher: D-pad/left stick selects, Cross starts, Triangle shows help, Circle exits.
+Flight: left stick moves/strafes, right stick aims, R2/L2 fire, L1/R1 roll.
+Quitting a game returns to the PS4 shell. Music/movies are disabled; multiplayer
+is unsupported; legacy lines/points (automap/crosshair) need further work.
+
+PS4 build scripts currently require sibling ScummVM-PS4 graphics sources and
+prebuilt libraries; a standalone source distribution is not ready yet.
 
 The upstream engine supports Descent I shareware and Descent II demo data.
 Those files remain local and separate from source, even when freely downloadable.
