@@ -1,0 +1,35 @@
+--- a/libcxx/include/math.h
++++ b/libcxx/include/math.h
+@@ -417,15 +417,21 @@
+ 
+ // The MSVC runtime already provides these functions as templates
+ #      ifndef _LIBCPP_MSVCRT
++#        if !defined(__ORBIS__)
+ using std::__math::isfinite;
++#        endif
+ using std::__math::isgreater;
+ using std::__math::isgreaterequal;
++#        if !defined(__ORBIS__)
+ using std::__math::isinf;
++#        endif
+ using std::__math::isless;
+ using std::__math::islessequal;
+ using std::__math::islessgreater;
++#        if !defined(__ORBIS__)
+ using std::__math::isnan;
+ using std::__math::isnormal;
++#        endif
+ using std::__math::isunordered;
+ #      endif // _LIBCPP_MSVCRT
+ 
+--- a/libcxx/include/__locale_dir/locale_base_api.h
++++ b/libcxx/include/__locale_dir/locale_base_api.h
+@@ -113,7 +113,7 @@
+ 
+ #  if defined(__APPLE__)
+ #    include <__locale_dir/support/apple.h>
+-#  elif defined(__FreeBSD__)
++#  elif defined(__FreeBSD__) && !_LIBCPP_HAS_MUSL_LIBC
+ #    include <__locale_dir/support/freebsd.h>
+ #  elif defined(_LIBCPP_MSVCRT_LIKE)
+ #    include <__locale_dir/support/windows.h>

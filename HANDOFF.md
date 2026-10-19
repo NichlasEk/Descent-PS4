@@ -17,8 +17,17 @@ unchanged. Nothing uploaded to the console; no PS4 package exists yet.
 - Actual patched sound-lookup function passes a mocked hash-boundary test under
   ASan/UBSan, including a non-NUL input and empty/oversized input.
 - Current PS4 SDK libc++ is version 11000 and lacks <ranges>. The isolated
-  C++23 syntax probe fails there. This is a confirmed cross-build prerequisite,
-  not a graphics or physical-console failure.
+  C++23 syntax probe fails there. This has now been bypassed with a separate
+  LLVM 21.1.8 runtime build, without changing the installed SDK.
+- Project-local libc++, libc++abi and libunwind static libraries build and
+  install under build/ps4-deps. The C++23 ranges/span syntax probe passes.
+- A PS4-target ELF using locale, stringstream, threads and exceptions links
+  successfully: build/ps4-probes/cxx-runtime.elf. Its only dynamic dependency
+  is libkernel.so. This is link evidence only: the probe has NOT been run in
+  shadPS4 or on hardware, and is not a packaged PS4 executable yet.
+- Runtime adaptations route FreeBSD-target/musl locale handling correctly,
+  avoid SDK math overload conflicts, and use LLVM's portable timed-backoff
+  atomic waits instead of unavailable FreeBSD umtx. Performance untested.
 
 ## Commands
 
@@ -27,7 +36,9 @@ bash scripts/build-linux.sh
 python3 tests/test-sound-span.py
 bash scripts/smoke-linux.sh d1
 bash scripts/smoke-linux.sh d2
-bash scripts/probe-ps4-cxx.sh # expected to fail with the installed old SDK
+bash scripts/build-ps4-runtime.sh
+bash scripts/probe-ps4-cxx.sh
+bash scripts/link-ps4-runtime-probe.sh
 ```
 
 Run the smoke tests sequentially: simultaneous xvfb-run -a processes can race
@@ -38,9 +49,11 @@ after its capture; this is not a graceful-exit test.
 
 ## Next gates
 
-1. Resolve modern C++ library support in an isolated PS4 dependency build,
-   without replacing the working SDK used by AvP. A legacy source baseline is
-   an alternative to investigate, not selected: 0.60.0-beta2 was inspected only.
+1. Package/run the isolated runtime probe to validate locale, thread and
+   exception behavior. Compilation/linking now pass, execution is unverified.
+   Do not mix prebuilt C++ renderer dependencies blindly: rebuild against this
+   matching runtime or verify ABI compatibility before integration. The legacy
+   source baseline remains unselected.
 2. Build PS4 PhysFS and select SDL audio/music support; audit the actual OpenGL
    calls against ps4gl before writing adapters.
 3. Bring up one D1 level in emulator and then physical PS4. Add D2 after that.
