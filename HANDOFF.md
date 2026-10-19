@@ -1,7 +1,13 @@
 # Descent PS4 bring-up — 2026-10-19
 
 Independent checkout and private remote: NichlasEk/Descent-PS4. AvP-PS4 is
-unchanged. Nothing uploaded to the console; no PS4 package exists yet.
+unchanged. Runtime-only diagnostic package uploaded to 192.168.32.229:2121:
+/data/pkg/Descent-PS4-Runtime-Test-0.01.pkg (7143424 bytes).
+SHA-256: 50b07cc6b4a8d9c904a1411d756d38dd54095737d0358865f7eba0a6dcc73fcf.
+Package validation and full FTP readback passed. Not installed or launched by
+the agent. This is NOT the game and includes no levels. Generated icon explicitly
+says RUNTIME TEST. On launch no graphics are rendered; read
+/data/descent-ps4/runtime-probe.log for RESULT: PASS. Missing log is not success.
 
 ## Verified
 
@@ -24,7 +30,7 @@ unchanged. Nothing uploaded to the console; no PS4 package exists yet.
 - A PS4-target ELF using locale, stringstream, threads and exceptions links
   successfully: build/ps4-probes/cxx-runtime.elf. Its only dynamic dependency
   is libkernel.so. This is link evidence only: the probe has NOT been run in
-  shadPS4 or on hardware, and is not a packaged PS4 executable yet.
+  shadPS4 or on hardware. It is now packaged as the runtime-only test above.
 - Runtime adaptations route FreeBSD-target/musl locale handling correctly,
   avoid SDK math overload conflicts, and use LLVM's portable timed-backoff
   atomic waits instead of unavailable FreeBSD umtx. Performance untested.

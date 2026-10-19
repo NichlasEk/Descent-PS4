@@ -1,0 +1,3 @@
+Generated with the built-in image_gen tool, 2026-10-19.
+
+Use case: stylized-concept. Asset type: square PS4 homebrew application icon for Descent I and II. Original cinematic sci-fi illustration: a compact angular mining combat spacecraft banking through a deep industrial underground tunnel, dramatic perspective, molten orange light and cold teal thrusters, gunmetal texture, strong readable silhouette. Large crisp metallic text exactly "DESCENT" with "I + II" beneath. Small clear bottom label exactly "RUNTIME TEST". Full-bleed square composition, generous safe margins for all lettering. No console brand logos, no copied game cover, no watermark. Opaque background.
