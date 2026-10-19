@@ -10,7 +10,7 @@ The distribution ZIP contains the tested PKG, installation instructions and
 licenses. The separate source/relink companion is for developers.
 
 Both engines now run natively on PS4, with a shared illustrated launcher and
-controller support. See [release preparation](docs/RELEASE.md) and
+controller support. See [release details](docs/RELEASE.md) and
 [current handoff](HANDOFF.md) for evidence and remaining limitations.
 
 Supply your own classic PC game files or separately obtained official demos.
@@ -43,7 +43,7 @@ The shared graphics implementation is Nichlas Ek's ps4gl, available under MIT.
 
 - `engine/`: pinned upstream checkout, excluded from this port's Git history.
 - `patches/`: reproducible upstream modifications when needed.
-- `platform/`: PS4-specific integration when implemented.
+- `platform/`: PS4-specific integration and shared launcher.
 - `scripts/`: source/data preparation and build helpers.
 - `build/`, `media/`, `artifacts/`, `dist/`: local-only inputs and outputs.
 

@@ -1,5 +1,25 @@
 # Descent PS4 bring-up — 2026-10-19
 
+## Published: v0.07 (supersedes preparation states below)
+
+Repository is PUBLIC: https://github.com/NichlasEk/Descent-PS4
+Release is published, non-draft/non-prerelease, marked latest:
+https://github.com/NichlasEk/Descent-PS4/releases/tag/v0.07
+Release target: 0bf002f159cc6ebfefe2de6c017e53cefa2d96e0.
+Anonymous GitHub API confirms public repository and visible release assets.
+
+Local release: dist/release-v0.07. Distribution ZIP is 73,962,275 bytes, SHA256
+815079027c435316313def4350623d2816448581174a926c371b1e4152449048.
+Source/relink tar.gz is 119,696,395 bytes, SHA256
+a01791957ea1ff8eb66482c461d3a3cb181c2e7db05d100d14c4a86ad2d0b912.
+Also attached GAME-DATA.txt and SHA256SUMS. Full GitHub download/readback passed,
+and downloaded SHA256SUMS was byte-compared with local sums before publication.
+32,960 companion files validated; ZIP contents read back and hashed. PKG inside
+ZIP is the exact user-accepted 0.07; no original game data bundled anywhere.
+All working-tree/history bounded signature/type audits passed. Full SDK binary
+reproducibility is not claimed; source build scope documented in companion.
+No further physical test is needed for the unchanged release container contents.
+
 ## Latest: 0.07 accepted; public release assembly
 
 User reports 0.07 works very well on physical PS4. Conditional public-release
