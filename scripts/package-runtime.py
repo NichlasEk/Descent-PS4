@@ -15,9 +15,12 @@ parser = argparse.ArgumentParser()
 mode = parser.add_mutually_exclusive_group()
 mode.add_argument('--game', type=int, choices=(1, 2))
 mode.add_argument('--collection', action='store_true')
+mode.add_argument('--collection-image-candidate', action='store_true',
+                  help='0.07: preserved launcher, games relinked with pinned SDL_image')
 args = parser.parse_args()
-game, collection = args.game, args.collection
-version = '00.06' if collection else '00.05' if game else '00.03'
+candidate = args.collection_image_candidate
+game, collection = args.game, args.collection or candidate
+version = '00.07' if candidate else '00.06' if collection else '00.05' if game else '00.03'
 title_id = 'DSNT00004' if collection else f'DSNT0000{game + 1}' if game else 'DSNT00001'
 title = 'Descent I + II' if collection else f'Descent {game} - Engine Test' if game else 'Descent I + II - Runtime Test'
 sdk = Path(os.environ.get('OO_PS4_TOOLCHAIN', '/opt/openorbis/OpenOrbis/PS4Toolchain'))
@@ -45,6 +48,11 @@ run(os.environ.get('CREATE_FSELF', '/home/nichlas/ut99-orbis/build/create-fself-
     '-out=' + str(stage / 'runtime.oelf'), '--eboot', stage / 'eboot.bin',
     '--paid', '0x3800000000000011')
 files.append('eboot.bin')
+if candidate:
+    old_collection = json.loads((dist / 'Descent-I-II-PS4-Collection-0.06.manifest.json').read_text())
+    launcher = Path(old_collection['stage']) / 'eboot.bin'
+    assert hashlib.sha256(launcher.read_bytes()).hexdigest() == old_collection['file_sha256']['eboot.bin']
+    shutil.copyfile(launcher, stage / 'eboot.bin')
 for name in ('sce_sys/about/right.sprx', 'sce_module/libc.prx', 'sce_module/libSceFios2.prx'):
     copy(sdk / 'samples/hello_world' / name, name)
 for name in ('libcxx', 'libcxxabi', 'libunwind'):
@@ -58,6 +66,15 @@ else:
 if collection:
     # Preserve the exact signed game images that were tested on physical PS4.
     for g in (1, 2):
+        if candidate:
+            rebuilt = root / f'build/ps4-release007/descent{g}'
+            provenance = json.loads((rebuilt.parent / 'provenance.json').read_text())
+            assert hashlib.sha256(rebuilt.read_bytes()).hexdigest() == provenance[f'descent{g}']['elf_sha256']
+            run(os.environ.get('CREATE_FSELF', '/home/nichlas/ut99-orbis/build/create-fself-current'),
+                '-in=' + str(rebuilt), '-out=' + str(stage / f'descent{g}.oelf'),
+                '--eboot', stage / f'descent{g}.bin', '--paid', '0x3800000000000011')
+            files.append(f'descent{g}.bin')
+            continue
         prior = json.loads((dist / f'Descent-{g}-PS4-Engine-Test-0.05.manifest.json').read_text())
         tested = Path(prior['stage']) / 'eboot.bin'
         if hashlib.sha256((root / f'build/ps4-game/descent{g}').read_bytes()).hexdigest() != prior['elf_sha256']:
@@ -66,6 +83,12 @@ if collection:
     copy(root / 'build/launcher-assets/hangar.rgba', 'launcher/hangar.rgba')
     copy(root / 'build/launcher-assets/font.bin', 'launcher/font.bin')
     copy(root / 'assets/launcher/FONT-LICENSE.txt', 'licenses/MenuFont.txt')
+    if candidate:
+        copy(root / 'licenses/GPL-3.txt', 'licenses/GPL-3.txt')
+        copy(root / 'build/sdl-image-src/LICENSE.txt', 'licenses/SDL_image.txt')
+        # Preserve embedded codec notices in their complete source headers.
+        for name in ('stb_image.h', 'miniz.h', 'nanosvg.h', 'nanosvgrast.h', 'qoi.h', 'tiny_jpeg.h'):
+            copy(root / 'build/sdl-image-src' / name, 'licenses/SDL_image-codecs/' + name)
 icon = root / ('assets/launcher/icon.png' if collection else 'assets/icon-runtime-generated.png')
 run('magick', icon, '-resize', '512x512!',
     '-alpha', 'off', '-strip', '-depth', '8', 'PNG24:' + str(stage / 'sce_sys/icon0.png'))
@@ -99,7 +122,7 @@ for name in files:
         parent = child
 ET.ElementTree(project).write(stage / 'project.gp4', encoding='utf-8', xml_declaration=True)
 run(tool, 'pkg_build', 'project.gp4', stage)
-package = dist / ('Descent-I-II-PS4-Collection-0.06.pkg' if collection else f'Descent-{game}-PS4-Engine-Test-0.05.pkg' if game else 'Descent-PS4-Runtime-Test-0.03.pkg')
+package = dist / ('Descent-I-II-PS4-Collection-0.07.pkg' if candidate else 'Descent-I-II-PS4-Collection-0.06.pkg' if collection else f'Descent-{game}-PS4-Engine-Test-0.05.pkg' if game else 'Descent-PS4-Runtime-Test-0.03.pkg')
 if package.exists():
     raise SystemExit('Refusing to overwrite existing package: ' + str(package))
 shutil.copyfile(stage / (content + '.pkg'), package)
@@ -111,5 +134,10 @@ manifest = dict(package=str(package), sha256=digest, contains_game_data=False,
                 elf_sha256=hashlib.sha256(elf.read_bytes()).hexdigest(),
                 file_sha256={name: hashlib.sha256((stage / name).read_bytes()).hexdigest() for name in files},
                 files=files, stage=str(stage))
+if candidate:
+    manifest['image_library'] = dict(version='2.6.3', revision='d3c6d5963dbe438bcae0e2b6f3d7cfea23d02829',
+        sha256=hashlib.sha256((root / 'build/ps4-image/libSDL2_image.a').read_bytes()).hexdigest())
+    manifest['games_relinked'] = True
+    manifest['launcher_matches_006'] = True
 package.with_suffix('.manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
 print(package, digest)

@@ -10,7 +10,7 @@ with their respective rights holders. No original game data is distributed.
 | PS4GL | Nichlas Ek; MIT alternative in source directory LICENSE.MIT and LICENSING.md |
 | PhysFS | 3.2.0, revision eb3383b532c5f74bfeb42ec306ba2cf80eed988c; zlib-style LICENSE.txt; local OpenOrbis patch |
 | SDL-PS4 | 7774cf3e7d04448c44d569c50d1f9a4532a2efe7; COPYING.txt; patched joystick and PS4GL video integration |
-| SDL_image | SDK archive reports development version 2.0.6; exact corresponding source not yet identified; release gate remains closed |
+| SDL_image (0.07) | Upstream 2.6.3, d3c6d5963dbe438bcae0e2b6f3d7cfea23d02829; unmodified source, local build; LICENSE.txt and embedded codec source notices included in PKG |
 | OpenGNM / Vulkan-PS4 | MIT plus retained per-file notices; modified source snapshots recorded in private inventory |
 | OpenGNM PSBC | MIT and Mesa/per-file notices; shader compiler source; C11 thread symbols privately renamed |
 | glslang | fa9c3deb49e035a8abcabe366f26aac010f6cbfb; LICENSE.txt and per-file permissive notices; patched PS4 build |
@@ -27,3 +27,10 @@ dependency corresponds exactly to those sources.
 
 The complete source and notice companion must accompany a future public binary
 release. The tested 0.06 PKG is unchanged while this review is performed.
+
+0.07 replaces only the SDK SDL_image link input in the two games, reusing the
+existing game/platform objects and other link inputs. The 0.06 launcher SELF is
+preserved byte-for-byte. PNG/JPEG use the bundled stb_image backend, avoiding
+additional untracked codec libraries; native simple-format decoders are enabled.
+Build script: scripts/build-ps4-image.sh. This resolves the image-source gap for
+0.07, not retroactively for the old SDK archive in 0.06. Physical retest pending.

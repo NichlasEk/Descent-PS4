@@ -27,6 +27,7 @@ build/tools/bin/scons -C engine CXX=clang++ sdl2=1 sdlmixer=0 sdlimage=1 \
     ../build/ps4-plan/compile_commands.json ../build/ps4-plan/dxxsconf.h \
     ../build/ps4-plan/d1x-rebirth/kconfig.udlr.h ../build/ps4-plan/d2x-rebirth/kconfig.udlr.h
 bash scripts/build-ps4-runtime.sh
+bash scripts/build-ps4-image.sh
 cmake -S build/physfs-src -B build/ps4-physfs -G Ninja \
     -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
     -DCMAKE_TOOLCHAIN_FILE="$root/cmake/openorbis-runtime.cmake" \

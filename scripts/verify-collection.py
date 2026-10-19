@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Verify packaged payloads and prove the two game SELFs match tested 0.05."""
 import hashlib
+import argparse
 import json
 import os
 from pathlib import Path
@@ -9,7 +10,10 @@ import tempfile
 
 root = Path(__file__).resolve().parents[1]
 tool = Path(os.environ.get('OO_PS4_TOOLCHAIN', '/opt/openorbis/OpenOrbis/PS4Toolchain')) / 'bin/linux/PkgTool.Core'
-package = root / 'dist/Descent-I-II-PS4-Collection-0.06.pkg'
+parser = argparse.ArgumentParser()
+parser.add_argument('--version', choices=('0.06', '0.07'), default='0.06')
+version = parser.parse_args().version
+package = root / f'dist/Descent-I-II-PS4-Collection-{version}.pkg'
 manifest = json.loads(package.with_suffix('.manifest.json').read_text())
 def digest(path):
     with path.open('rb') as source:
@@ -46,11 +50,20 @@ actual = {p.relative_to(out / 'uroot').as_posix() for p in (out / 'uroot').rglob
 assert actual == set(manifest['file_sha256']) | {'sce_sys/keystone'}, 'Unexpected payloads'
 assert not any(p.suffix.lower() in ('.hog', '.pig', '.ham', '.s22', '.iso') for p in out.rglob('*'))
 for game in (1, 2):
+    if version == '0.07':
+        assert manifest['games_relinked'] is True
+        assert digest(locate(out, f'descent{game}.bin')) == manifest['file_sha256'][f'descent{game}.bin']
+        print(f'PASS Descent {game}: candidate SELF matches signing-stage hash (not old 0.05)')
+        continue
     old_pkg = root / f'dist/Descent-{game}-PS4-Engine-Test-0.05.pkg'
     old_manifest = json.loads(old_pkg.with_suffix('.manifest.json').read_text())
     assert digest(old_pkg) == old_manifest['sha256']
     old = extract(old_pkg)
     assert digest(locate(out, f'descent{game}.bin')) == digest(locate(old, 'eboot.bin'))
     print(f'PASS Descent {game}: packaged SELF byte-identical to tested 0.05')
+if version == '0.07':
+    prior = json.loads((root / 'dist/Descent-I-II-PS4-Collection-0.06.manifest.json').read_text())
+    assert digest(locate(out, 'eboot.bin')) == prior['file_sha256']['eboot.bin']
+    print('PASS launcher byte-identical to console-tested 0.06')
 print('PASS payload hashes, authored SFO fields, exact file allowlist and no original game data')
 print('Extracted collection:', out)

@@ -1,14 +1,23 @@
-# Collection 0.06 release preparation
+# Collection release preparation
 
 Physical PS4 acceptance reported by maintainer on 2026-10-19.
 Public release is pending the distribution checks below.
 
 Visibility change explicitly authorized by maintainer, conditional on completion
 of the release checks. Do not publish while the source inventory gate is false.
-2026-10-19 audit: exact SDK SDL_image source is unresolved (binary reports
-development version 2.0.6; there is no upstream release-2.0.6 tag). Other source
-candidates captured by scripts/prepare-release-sources.py. Packaged OpenOrbis
-module hashes match the SDK's module build outputs. No tested binaries changed.
+2026-10-19: user approved replacing the untraced SDK SDL_image archive. Candidate
+0.07 uses unmodified upstream 2.6.3 at d3c6d5963dbe438bcae0e2b6f3d7cfea23d02829.
+Other source candidates captured by scripts/prepare-release-sources.py. Packaged
+OpenOrbis module hashes match the SDK's module build outputs. Old 0.06 untouched.
+
+New test package: `Descent-I-II-PS4-Collection-0.07.pkg`.
+SHA-256: `2b71a79f12ebcd7abb1089f556cbd1b82c75f094195ec0ab5ade06f1ea83e2af`.
+Same launcher; relinked games require a physical PS4 retest before release.
+Package extraction/hash/allowlist checks pass, including unchanged launcher.
+Both games reached rendered first levels via the launcher in shadPS4, with
+injected movement/yaw/fire and visually inspected screenshots. FTP delivery to
+the maintainer's PS4 has a matching full-file readback hash. Neither of these
+checks substitutes for physical acceptance of this new candidate.
 
 Tested candidate: `Descent-I-II-PS4-Collection-0.06.pkg`
 
@@ -41,4 +50,4 @@ incomplete. Quitting a game returns to the PS4 shell.
 - Supply installation instructions, notices, corresponding sources and checksums
   with the verified package. Do not silently replace the tested 0.06 artifact.
 
-Package validation: `python3 scripts/verify-collection.py`.
+Package validation: `python3 scripts/verify-collection.py --version 0.07`.

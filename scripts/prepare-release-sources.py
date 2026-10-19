@@ -30,6 +30,7 @@ def main():
         'physfs': ROOT / 'build/physfs-src',
         'ps4gl': STACK / 'compat/ps4gl',
         'sdl': STACK / '.tools/sdl-input-src',
+        'sdl-image': ROOT / 'build/sdl-image-src',
         'glslang': STACK / '.tools/glslang',
         'opengnm': NATIVE / 'opengnm',
         'vulkan-ps4': NATIVE / 'vulkan-ps4',
@@ -98,7 +99,7 @@ def main():
     report = {
         'public_release_ready': False,
         'blockers': [
-            'SDK SDL_image binary reports development version 2.0.6; exact source not identified.',
+            '0.07 replaces untraced SDL_image with pinned 2.6.3; physical retest pending.',
             'Source snapshots and build references still need a complete clean-build integration check.',
         ],
         'sdk_module_identity': modules,

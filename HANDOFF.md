@@ -1,5 +1,44 @@
 # Descent PS4 bring-up — 2026-10-19
 
+## Latest: source-traced image library candidate 0.07
+
+User explicitly approved replacing the untraced image library and making a new
+test PKG. SDL_image 2.6.3, commit d3c6d5963dbe438bcae0e2b6f3d7cfea23d02829,
+is now built unmodified by scripts/build-ps4-image.sh. PNG/JPEG use bundled stb;
+simple-format decoders enabled. No installed SDK/sibling files modified.
+Archive SHA256: 08ba557e8ca47306d43ee41d467673fffde6c4e3fcfa584207274bc06d05cf66.
+
+scripts/relink-image-candidate.py reused the tested game/platform objects and
+other link inputs, changing only SDL_image and the output path. Old game ELFs
+remain in build/ps4-game, new ones in build/ps4-release007; provenance.json records
+link arguments/input hashes. Original 0.06 PKG still matches its accepted hash.
+Launcher SELF in 0.07 is byte-identical to 0.06. No control/gameplay changes.
+
+Package: dist/Descent-I-II-PS4-Collection-0.07.pkg (74,514,432 bytes).
+SHA256: 2b71a79f12ebcd7abb1089f556cbd1b82c75f094195ec0ab5ade06f1ea83e2af.
+Stage: build/runtime-pkg-o__n_y67. ID DSNT00004, version 00.07.
+Full FTP upload/readback verified at 192.168.32.229:2121:
+/data/pkg/Descent-I-II-PS4-Collection-0.07.pkg.
+Receipt: artifacts/ftp-Descent-I-II-PS4-Collection-0.07.json.
+Old remote package and all game data/profiles left untouched; not installed.
+
+PKG validator and scripts/verify-collection.py --version 0.07 pass: extracted
+payload hashes, allowlist, SFO, no game data, unchanged launcher. GPL-3 plus
+SDL_image and embedded codec notices included. Both launcher->game transitions
+reached first-level cockpit/3D views in shadPS4; injected forward/yaw/fire input
+gave rotated scenes, projectile impacts and energy99. Visually inspected current
+artifacts/launcher-d1.png and launcher-d2.png. D2 log confirms descent2.bin.
+Do not mistake older missing-data image viewed while test was running for the
+completed test. Script outputs were checked after completion.
+
+Run test: COLLECTION_VERSION=0.07 COLLECTION_PLAYTEST=1 DESCENT_SMOKE_MOVE=1
+bash scripts/smoke-launcher.sh d1 (then d2). Harness uses isolated Xvfb/profile.
+New private source inventory: build/release-sources-j90xigxx, includes SDL_image.
+Image-source gap resolved for 0.07. Remaining gates: user physical 0.07 retest,
+complete source/build companion integration and distribution review. Repository
+must remain private until those pass; permission to publish then already given.
+Ask user to test both games, flight/fire, audio and exit/relaunch on PS4.
+
 ## Release preparation (latest)
 
 Maintainer now reports Collection 0.06 works very well on physical PS4 and asks

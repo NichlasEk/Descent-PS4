@@ -40,7 +40,7 @@ foreach(game 1 2 launcher)
   target_link_libraries(descent${game} PRIVATE "${OO_PS4_TOOLCHAIN}/lib/crt1.o" ps4_graphics
     "${CMAKE_CURRENT_SOURCE_DIR}/build/ps4-physfs/libphysfs.a"
     "${STACK}/build/ps4-sdlgl/libSDL2.a"
-    "${OO_PS4_TOOLCHAIN}/lib/libSDL2_image.a"
+    "${CMAKE_CURRENT_SOURCE_DIR}/build/ps4-image/libSDL2_image.a"
     -Wl,--whole-archive "${NATIVE}/vulkan-ps4/libvulkan_ps4.a" "${NATIVE}/opengnm/libopengnm.a" -Wl,--no-whole-archive
     "${STACK}/build/scummvm-vulkan/bridge/libpsbc-scummvm.a"
     "${STACK}/build/glslang-orbis/libglslang-ps4.a"

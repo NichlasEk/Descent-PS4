@@ -3,3 +3,4 @@ dependency-patches/*.patch -whitespace
 runtime-patches/*.patch -whitespace
 # Preserve the upstream legal text's original whitespace.
 LICENSE -whitespace
+assets/launcher/FONT-LICENSE.txt -whitespace

@@ -6,6 +6,9 @@ Native PS4 port project by [Nichlas Ek](https://github.com/NichlasEk), based on
 **Collection 0.06: gameplay, controls and the combined launcher confirmed working
 on a physical PS4 by the maintainer. Public release preparation is in progress.**
 
+0.07 is a new test candidate: pinned, locally built SDL_image 2.6.3 replaces the
+SDK's untraced archive. Launcher unchanged; physical PS4 retest pending.
+
 Both engines now run natively on PS4, with a shared illustrated launcher and
 controller support. See [release preparation](docs/RELEASE.md) and
 [current handoff](HANDOFF.md) for evidence and remaining limitations.
