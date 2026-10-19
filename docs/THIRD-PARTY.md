@@ -1,4 +1,4 @@
-# Component inventory (release review in progress)
+# Third-party components and source companion
 
 This is an unofficial port. Descent and its original data remain associated
 with their respective rights holders. No original game data is distributed.
@@ -19,18 +19,20 @@ with their respective rights holders. No original game data is distributed.
 | Gontserrat font | OFL; assets/launcher/FONT-LICENSE.txt |
 | Launcher art/icon | Generated for this port; prompts retained in assets/launcher/PROMPTS.txt; no trademark rights asserted |
 
-`scripts/prepare-release-sources.py` snapshots source candidates and records
-per-file hashes and Git revisions where available. It deliberately records
-`public_release_ready: false`. Its build references are not yet a standalone
-reproducible build. Source snapshots do not establish that every prebuilt
-dependency corresponds exactly to those sources.
+`scripts/prepare-release-sources.py` records source snapshots, per-file hashes
+and Git revisions where available. Assembly subsequently verifies the portable
+core-source build, byte-identical relinks and distribution contents. The final
+companion contains BUILD.json, build.py and a per-file manifest. No full SDK
+bit-reproducibility claim is made; historical SDK runtime sources are marked as
+references. See SOURCE-COMPANION.md for build instructions and limits.
 
-The complete source and notice companion must accompany a future public binary
-release. The tested 0.06 PKG is unchanged while this review is performed.
+The complete source and notice companion accompanies this binary release.
+Preserve both when redistributing. The tested 0.07 PKG is unchanged.
 
 0.07 replaces only the SDK SDL_image link input in the two games, reusing the
 existing game/platform objects and other link inputs. The 0.06 launcher SELF is
 preserved byte-for-byte. PNG/JPEG use the bundled stb_image backend, avoiding
 additional untracked codec libraries; native simple-format decoders are enabled.
 Build script: scripts/build-ps4-image.sh. This resolves the image-source gap for
-0.07, not retroactively for the old SDK archive in 0.06. Physical retest pending.
+0.07, not retroactively for the old SDK archive in 0.06. The maintainer has now
+confirmed 0.07 works well on physical PS4.

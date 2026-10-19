@@ -1,53 +1,49 @@
-# Collection release preparation
+# Descent I + II PS4 — v0.07
 
-Physical PS4 acceptance reported by maintainer on 2026-10-19.
-Public release is pending the distribution checks below.
+The maintainer reports Collection 0.07 works very well on physical PS4.
+This release uses that exact package, not a newly rebuilt replacement.
 
-Visibility change explicitly authorized by maintainer, conditional on completion
-of the release checks. Do not publish while the source inventory gate is false.
-2026-10-19: user approved replacing the untraced SDK SDL_image archive. Candidate
-0.07 uses unmodified upstream 2.6.3 at d3c6d5963dbe438bcae0e2b6f3d7cfea23d02829.
-Other source candidates captured by scripts/prepare-release-sources.py. Packaged
-OpenOrbis module hashes match the SDK's module build outputs. Old 0.06 untouched.
-
-New test package: `Descent-I-II-PS4-Collection-0.07.pkg`.
+Package: `Descent-I-II-PS4-Collection-0.07.pkg` (74,514,432 bytes).
 SHA-256: `2b71a79f12ebcd7abb1089f556cbd1b82c75f094195ec0ab5ade06f1ea83e2af`.
-Same launcher; relinked games require a physical PS4 retest before release.
-Package extraction/hash/allowlist checks pass, including unchanged launcher.
-Both games reached rendered first levels via the launcher in shadPS4, with
-injected movement/yaw/fire and visually inspected screenshots. FTP delivery to
-the maintainer's PS4 has a matching full-file readback hash. Neither of these
-checks substitutes for physical acceptance of this new candidate.
 
-Tested candidate: `Descent-I-II-PS4-Collection-0.06.pkg`
+## Included
 
-SHA-256: `57a60e47c087b1ff480e63bf6495b0834a83dcc9766be4a02e187feb65ef5d27`
+- One illustrated launcher for both games, remembered selection and controller navigation.
+- Controller flight/combat bindings and HDD-first, USB0–USB7 data lookup.
+- Original launcher artwork/icon; no original game data, demo levels or installers.
+- Pinned, locally built SDL_image 2.6.3 instead of the untraced SDK archive.
+- Installation instructions, licenses and a separate source/relink companion.
 
-## Release notes draft
+Download the distribution ZIP and extract its PKG for installation. Supply your
+own classic PC game files or separately obtained official demo/shareware files;
+see GAME-DATA.txt. This is unofficial homebrew, not a Sony retail release.
+Original Parallax non-commercial terms and upstream licensing remain applicable.
 
-Descent I + II PS4 Collection: one launcher with custom artwork and icon,
-remembered selection, controller navigation, data availability indicators,
-and missing-data guidance. Native gameplay and controls tested on physical PS4.
-Game executables are unchanged from the tested 0.05 build.
+## Verification
 
-No original assets, demo levels, ISOs or installers bundled. HDD data takes
-priority, followed by USB0–USB7. Full classic PC data is supported by the engine
-but not yet tested on this port. See GAME-DATA.txt for required files.
+The PKG passes structural/hash checks and extracted payload allowlist verification.
+Its launcher matches the previously tested 0.06 launcher byte-for-byte.
+Both games reached rendered first levels through the launcher in shadPS4, with
+movement/yaw/fire input inspected visually. Full FTP readback matched the local
+package, followed by the maintainer's physical PS4 acceptance.
 
-Music/movies disabled; multiplayer unsupported; legacy line/point drawing
-incomplete. Quitting a game returns to the PS4 shell.
+The source companion relinks all three ELFs byte-identically using captured
+inputs. All 242 engine/platform/PS4GL translation units also compile from the
+relocatable companion and link successfully. OpenGNM, PSBC and Vulkan archives
+were independently rebuilt from the included snapshots. These verification
+builds do not replace the console-tested package.
 
-## Before public binary distribution
+The quick source build uses supplied dependency archives; source and reference
+recipes for modifying those dependencies accompany them. A full reproducible
+SDK build is not claimed. See SOURCE-COMPANION.md for the exact build scope.
 
-- Include full DXX-Rebirth COPYING and GPL-3 texts, not only COPYING.
-- Inventory SDL, SDL_image/codecs, PhysFS, PS4GL, Vulkan/OpenGNM, shader compiler,
-  LLVM runtime and packaged module origins and notices.
-- Make corresponding engine/platform/dependency modifications and build scripts
-  available with exact source revisions. Sibling paths and prebuilt libraries
-  alone do not provide the complete source distribution.
-- Audit staged sources and Git history for private data, credentials and logs.
-- Visibility approval received; execute only after outstanding checks pass.
-- Supply installation instructions, notices, corresponding sources and checksums
-  with the verified package. Do not silently replace the tested 0.06 artifact.
+## Known limitations
 
-Package validation: `python3 scripts/verify-collection.py --version 0.07`.
+- Music and movies disabled; multiplayer unsupported.
+- Legacy line/point drawing remains incomplete (automap/crosshair).
+- Exiting a game returns to the PS4 shell, not the launcher.
+- Retail classic PC files are supported by the engine, but retail data has not
+  yet been tested on this port; ISO/installer files must be extracted first.
+- HDD/USB fallback is implemented but not exhaustively tested on hardware.
+
+Package verification: `python3 scripts/verify-collection.py --version 0.07`.

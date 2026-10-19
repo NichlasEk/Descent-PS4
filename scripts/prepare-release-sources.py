@@ -40,7 +40,9 @@ def main():
         'openorbis-modules': SDK / 'src/modules',
         'openorbis-crt': SDK / 'src/crt',
     }
-    for name in ('libcxx', 'libcxxabi', 'libunwind', 'cmake', 'runtimes', 'llvm'):
+    roots['sdk-musl-reference'] = STACK / '.tools/openorbis-musl-2023-reference'
+    roots['sdk-compiler-rt-reference'] = STACK / '.tools/openorbis-llvm-v12-reference/compiler-rt'
+    for name in ('libc', 'libcxx', 'libcxxabi', 'libunwind', 'cmake', 'runtimes', 'llvm'):
         roots['llvm21/' + name] = ROOT / 'build/llvm-src' / name
     suffixes = {'.c', '.h', '.cc', '.cpp', '.hpp', '.inc', '.inl', '.S', '.s',
                 '.cmake', '.mak', '.mk', '.py', '.sh', '.bat', '.txt', '.md', '.rst',
@@ -70,13 +72,11 @@ def main():
                 continue
             if path.suffix.lower() in forbidden:
                 continue
-            if (path.suffix not in suffixes and '.' in path.name
-                    and not path.name.startswith(('LICENSE', 'COPYING', 'COPYRIGHT', 'Makefile'))):
-                skipped.append(label + '/' + rel.as_posix())
-                continue
+            # Preserve ALL text inputs, including .tcc, shader fixtures, codegen
+            # CSV files and configure files. An extension allowlist lost sources.
             # Exclude extensionless compiled tools; preserve text build scripts.
             with path.open('rb') as stream:
-                head = stream.read(4096)
+                head = stream.read()
             if b'\0' in head or head.startswith((b'\x7fELF', b'MZ')):
                 skipped.append(label + '/' + rel.as_posix())
                 continue
@@ -99,7 +99,7 @@ def main():
     report = {
         'public_release_ready': False,
         'blockers': [
-            '0.07 replaces untraced SDL_image with pinned 2.6.3; physical retest pending.',
+            '0.07 physically accepted by maintainer; assembly checks are separate.',
             'Source snapshots and build references still need a complete clean-build integration check.',
         ],
         'sdk_module_identity': modules,

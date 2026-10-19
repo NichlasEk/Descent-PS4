@@ -1,5 +1,22 @@
 # Descent PS4 bring-up — 2026-10-19
 
+## Latest: 0.07 accepted; public release assembly
+
+User reports 0.07 works very well on physical PS4. Conditional public-release
+authorization already given. Preserve exact tested PKG hash below.
+Companion build/release-sources-l5w0a7lr contains full text source snapshots
+(extension allowlist fixed: valptridx.tcc and other build inputs retained),
+runtime generated headers, engine generated control tables, 242 uniquely named
+object inputs, captured libraries and portable BUILD.json/build.py.
+All three relinks are byte-identical to original 0.07 ELFs. Core-source rebuild
+(242 engine/platform/PS4GL units) and links passed. OpenGNM, PSBC, Vulkan source
+builds also passed; snapshot source hashes unchanged after building. Logs under
+artifacts/release-*-build.log and release-companion-rebuild.log. These rebuilt
+ELFs/archives are verification only, NOT replacements for the tested package.
+Next: assemble distribution ZIP/source companion, full readback/audit, commit,
+draft release/upload verification, then visibility public and release publish.
+No need for another physical test if the accepted PKG stays byte-identical.
+
 ## Latest: source-traced image library candidate 0.07
 
 User explicitly approved replacing the untraced image library and making a new
