@@ -45,11 +45,11 @@ files.append('sce_sys/icon0.png')
 sfo = stage / 'sce_sys/param.sfo'
 run(tool, 'sfo_new', sfo)
 for key, kind, size, value in [
-    ('APP_TYPE', 'Integer', 4, '1'), ('APP_VER', 'Utf8', 8, '00.01'),
+    ('APP_TYPE', 'Integer', 4, '1'), ('APP_VER', 'Utf8', 8, '00.02'),
     ('ATTRIBUTE', 'Integer', 4, '0'), ('CATEGORY', 'Utf8', 4, 'gd'),
     ('CONTENT_ID', 'Utf8', 48, content), ('DOWNLOAD_DATA_SIZE', 'Integer', 4, '0'),
     ('SYSTEM_VER', 'Integer', 4, '0'), ('TITLE', 'Utf8', 128, 'Descent I + II - Runtime Test'),
-    ('TITLE_ID', 'Utf8', 12, 'DSNT00001'), ('VERSION', 'Utf8', 8, '00.01')]:
+    ('TITLE_ID', 'Utf8', 12, 'DSNT00001'), ('VERSION', 'Utf8', 8, '00.02')]:
     run(tool, 'sfo_setentry', sfo, key, '--type', kind, '--maxsize', size, '--value', value)
 files.append('sce_sys/param.sfo')
 project = ET.Element('psproject', fmt='gp4', version='1000')
@@ -71,7 +71,7 @@ for name in files:
         parent = child
 ET.ElementTree(project).write(stage / 'project.gp4', encoding='utf-8', xml_declaration=True)
 run(tool, 'pkg_build', 'project.gp4', stage)
-package = dist / 'Descent-PS4-Runtime-Test-0.01.pkg'
+package = dist / 'Descent-PS4-Runtime-Test-0.02.pkg'
 if package.exists():
     raise SystemExit('Refusing to overwrite existing package: ' + str(package))
 shutil.copyfile(stage / (content + '.pkg'), package)

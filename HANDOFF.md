@@ -11,6 +11,19 @@ says RUNTIME TEST. On launch no graphics are rendered; read
 
 ## Verified
 
+- Physical 0.01 test logged all functional checks PASS, but the console recorded
+  CE-34878-0 for DSNT00001. Thus successful process exit was NOT verified.
+  Evidence is local in artifacts/crash-runtime-001 (not for publication).
+- Exit investigation found missing .fini_array and zero-valued hidden bounds in
+  0.01. Added a local supplemental linker script with explicit bounds and a
+  diagnostic finalizer. 0.02 has one relocated entry and passes
+  tests/test-fini-bounds.py. This is a candidate crash fix, not proven on hardware.
+- Runtime-Test-0.02.pkg uploaded alongside 0.01 in /data/pkg, full FTP readback
+  verified. Logs now distinguish local cleanup, return from main, atexit and
+  fini_array. Ask the user to install/start 0.02, then read the runtime log and
+  check whether a fresh application crash was recorded. Normal exit is retained;
+  no _Exit workaround. No game package exists yet.
+
 - Pinned DXX-Rebirth source and both PC demos prepared with recorded hashes.
 - Both Linux executables build with the local GCC 16 / SDL2 / PhysFS 3.2 stack.
 - D1 shareware initially failed at laser03.raw, then corrupt compressed audio.
