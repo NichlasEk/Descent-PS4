@@ -5,6 +5,12 @@ Native PS4 port project by [Nichlas Ek](https://github.com/NichlasEk), based on
 
 **Initial bring-up: no PS4 executable or console compatibility claim yet.**
 
+Both engines build on Linux and the demos reach their menu/pilot-name screens.
+The D1 shareware sound-loading fixes are preserved in the patch overlay, with a
+targeted ASan/UBSan regression test. The current PS4 gate is the SDK's older
+C++ standard library: upstream requires facilities it does not provide.
+See [current handoff](HANDOFF.md) for evidence and next steps.
+
 First milestone: a Descent I shareware level with rendering, audio and controls.
 Then bring up Descent II using the same platform layer. Planned data policy:
 external HDD first, USB fallback; no retail game data in packages or Git.

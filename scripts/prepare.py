@@ -15,6 +15,12 @@ if not engine.exists():
 current = subprocess.check_output(['git', '-C', str(engine), 'rev-parse', 'HEAD'], text=True).strip()
 if current != REVISION:
     raise SystemExit(f'Engine revision {current} differs from pin {REVISION}; no checkout changes made')
+for patch in sorted((ROOT / 'patches').glob('*.patch')):
+    applied = subprocess.run(['git', '-C', str(engine), 'apply', '--reverse', '--check', str(patch)],
+                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    if applied.returncode:
+        subprocess.run(['git', '-C', str(engine), 'apply', '--check', str(patch)], check=True)
+        subprocess.run(['git', '-C', str(engine), 'apply', str(patch)], check=True)
 cache = ROOT / 'build/downloads'
 cache.mkdir(parents=True, exist_ok=True)
 for game, archive, sha, prefix, names in [
