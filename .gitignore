@@ -1,0 +1,15 @@
+/engine/
+/build/
+/dist/
+/artifacts/
+/media/
+*.iso
+*.pkg
+*.hog
+*.pig
+*.ham
+*.s11
+*.s22
+__pycache__/
+.env
+.env.*
